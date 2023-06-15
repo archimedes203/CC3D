@@ -1,0 +1,131 @@
+<CompuCell3D Revision="0" Version="4.4.0">
+   
+   <Metadata>
+      
+      <!-- Basic properties simulation -->
+      <NumberOfProcessors>1</NumberOfProcessors>
+      <DebugOutputFrequency>10</DebugOutputFrequency>
+      <!-- <NonParallelModule Name="Potts"/> -->
+   </Metadata>
+   
+   <Potts>
+      
+      <!-- Basic properties of CPM (GGH) algorithm -->
+      <Dimensions x="80" y="80" z="21"/>
+      <Steps>150000</Steps>
+      <Temperature>15.0</Temperature>
+      <NeighborOrder>2</NeighborOrder>
+      <LatticeType>Hexagonal</LatticeType>
+      <Boundary_x>Periodic</Boundary_x>
+      <Boundary_y>Periodic</Boundary_y>
+      <!--Boundary_z>Periodic</Boundary_z-->
+   </Potts>
+   
+   <Plugin Name="CellType">
+      
+      <!-- Listing all cell types in the simulation -->
+      <CellType TypeId="0" TypeName="Medium"/>
+      <CellType Freeze="" TypeId="1" TypeName="CUTICLE"/>
+      <CellType TypeId="2" TypeName="APICAL"/>
+      <CellType TypeId="3" TypeName="BASAL"/>
+      <CellType TypeId="4" TypeName="NUCLEUS"/>
+   </Plugin>
+   
+   <Plugin Name="Volume">
+      <VolumeEnergyParameters CellType="CUTICLE" LambdaVolume="2.0" TargetVolume="50"/>
+      <VolumeEnergyParameters CellType="APICAL" LambdaVolume="5.0" TargetVolume="15"/>
+      <VolumeEnergyParameters CellType="BASAL" LambdaVolume="2.0" TargetVolume="40"/>
+      <VolumeEnergyParameters CellType="NUCLEUS" LambdaVolume="45.0" TargetVolume="0.25"/>
+   </Plugin>
+   
+   <Plugin Name="LengthConstraint">
+   
+   <!-- Applies elongation constraint to each cell. Users specify target length of major axis -TargetLength (in 3D additionally, target length of minor axis - MinorTargetLength) and a strength of the constraint -LambdaLength. Parameters are specified for each cell type -->
+   <!-- IMPORTANT: To prevent cell fragmentation for large elongations you need to also use connectivity constraint -->
+   <!-- LengthConstraint plugin with no body: <Plugin Name="LengthConstraint"/> permits constraint specification for individual cells -->
+   <!-- Comment out the constrains for cell types which don't need them -->
+   <!--LengthEnergyParameters CellType="CUTICLE" LambdaLength="2.0" MinorTargetLength="5.0" TargetLength="25"/-->
+   <!--LengthEnergyParameters CellType="APICAL" LambdaLength="2.0" MinorTargetLength="5.0" TargetLength="25"/-->
+   <!--LengthEnergyParameters CellType="BASAL" LambdaLength="2.0" MinorTargetLength="5.0" TargetLength="25"/-->
+   <LengthEnergyParameters CellType="NUCLEUS" LambdaLength="2.0" MinorTargetLength="5.0" TargetLength="25"/>
+</Plugin>
+
+   
+   <Plugin Name="CenterOfMass">
+      
+      <!-- Module tracking center of mass of each cell -->
+   </Plugin>
+   
+   <Plugin Name="NeighborTracker">
+      
+      <!-- Module tracking neighboring cells of each cell -->
+   </Plugin>
+   
+   <Plugin Name="Contact">
+      <!-- Specification of adhesion energies -->
+      <Energy Type1="Medium" Type2="Medium">0</Energy>
+      <Energy Type1="Medium" Type2="CUTICLE">16.0</Energy>
+      <Energy Type1="Medium" Type2="APICAL">18.0</Energy>
+      <Energy Type1="Medium" Type2="BASAL">12.0</Energy>
+      <Energy Type1="Medium" Type2="NUCLEUS">25.0</Energy>
+      
+      <Energy Type1="CUTICLE" Type2="CUTICLE">10.0</Energy>
+      <Energy Type1="CUTICLE" Type2="APICAL">1.0</Energy>
+      <Energy Type1="CUTICLE" Type2="BASAL">15.0</Energy>
+      <Energy Type1="CUTICLE" Type2="NUCLEUS">23.0</Energy>
+      
+      <Energy Type1="APICAL" Type2="APICAL">2.0</Energy>
+      <Energy Type1="APICAL" Type2="BASAL">12.0</Energy>
+      <Energy Type1="APICAL" Type2="NUCLEUS">25.0</Energy>
+      
+      <Energy Type1="BASAL" Type2="BASAL">2.0</Energy>
+      <Energy Type1="BASAL" Type2="NUCLEUS">25.0</Energy>
+      
+      <Energy Type1="NUCLEUS" Type2="NUCLEUS">50.0</Energy>
+      <NeighborOrder>4</NeighborOrder>
+   </Plugin>
+   
+   <Plugin Name="ContactInternal">
+      <!-- Specification of internal adhesion energies -->
+      <Energy Type1="Medium" Type2="Medium">0</Energy>
+      <Energy Type1="Medium" Type2="CUTICLE">10.0</Energy>
+      <Energy Type1="Medium" Type2="APICAL">10.0</Energy>
+      <Energy Type1="Medium" Type2="BASAL">10.0</Energy>
+      <Energy Type1="Medium" Type2="NUCLEUS">10.0</Energy>
+      
+      <Energy Type1="CUTICLE" Type2="CUTICLE">0</Energy>
+      <Energy Type1="CUTICLE" Type2="APICAL">1.0</Energy>
+      <Energy Type1="CUTICLE" Type2="BASAL">7.0</Energy>
+      <Energy Type1="CUTICLE" Type2="NUCLEUS">10.0</Energy>
+      
+      <Energy Type1="APICAL" Type2="APICAL">0</Energy>
+      <Energy Type1="APICAL" Type2="BASAL">3.0</Energy>
+      <Energy Type1="APICAL" Type2="NUCLEUS">8.0</Energy>
+      
+      <Energy Type1="BASAL" Type2="BASAL">0</Energy>
+      <Energy Type1="BASAL" Type2="NUCLEUS">2.0</Energy>
+      
+      <Energy Type1="NUCLEUS" Type2="NUCLEUS">0</Energy>
+      <NeighborOrder>4</NeighborOrder>
+   </Plugin>
+   
+   <Steppable Type="UniformInitializer">
+      
+      <!-- Initial layout of cells in the form of rectangular slab -->
+      <Region>
+         <BoxMin x="0" y="0" z="0"/>
+         <BoxMax x="80" y="80" z="20"/>
+         <Gap>0</Gap>
+         <Width>7</Width>
+         <Types>APICAL,BASAL,NUCLEUS</Types>
+      </Region>
+      
+      <Region>
+         <BoxMin x="0" y="0" z="20"/>
+         <BoxMax x="80" y="80" z="21"/>
+         <Gap>0</Gap>
+         <Width>7</Width>
+         <Types>CUTICLE</Types>
+      </Region>
+   </Steppable>
+</CompuCell3D>

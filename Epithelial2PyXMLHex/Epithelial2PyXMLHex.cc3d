@@ -1,0 +1,5 @@
+<Simulation version="4.4.0">
+   <XMLScript Type="XMLScript">Simulation/Epithelial2PyXMLHex.xml</XMLScript>
+   <PythonScript Type="PythonScript">Simulation/Epithelial2PyXMLHex.py</PythonScript>
+   <Resource Type="Python">Simulation/Epithelial2PyXMLHexSteppables.py</Resource>
+</Simulation>
